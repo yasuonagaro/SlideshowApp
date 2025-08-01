@@ -8,12 +8,22 @@
 import UIKit
 
 class ZoomViewController: UIViewController {
-
+    
+    @IBOutlet weak var ZoomImageView: UIImageView!
+    // 画面遷移時に画像を受け取るプロパティ
+    var imageToZoom: UIImage?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
+        //画像をセット
+        ZoomImageView.image = imageToZoom
     }
+    
+    // 閉じるボタン
+    @IBAction func close(_ sender: UIButton) {
+        self.dismiss(animated: true, completion: nil)
+    }
+    
     
 
     /*
