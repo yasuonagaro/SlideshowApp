@@ -11,7 +11,7 @@ class ZoomViewController: UIViewController {
     
     @IBOutlet weak var ZoomImageView: UIImageView!
     // 画面遷移時に画像を受け取るプロパティ
-    var imageToZoom: UIImage?
+    var imageToZoom: UIImage!
     
     override func viewDidLoad() {
         super.viewDidLoad()
