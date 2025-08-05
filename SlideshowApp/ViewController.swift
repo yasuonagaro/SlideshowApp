@@ -12,6 +12,8 @@ class ViewController: UIViewController {
     @IBOutlet weak var ImageView: UIImageView!
     @IBOutlet weak var forward: UIButton!
     @IBOutlet weak var back: UIButton!
+    @IBOutlet weak var autoPlay: UIButton!
+    
     
     let imageData: [String] = ["quokka","koala","bird"] // 画像をリストに格納
     var imageCurrentIndex: Int = 0 // 画像を指定する初期インデックスを0
@@ -41,15 +43,15 @@ class ViewController: UIViewController {
         // 自動再生停止中の場合
         if !isAutoplaying {
             isAutoplaying = true
-            sender.setTitle("停止", for: .normal)
+            autoPlay.setTitle("停止", for: .normal)
             timer = Timer.scheduledTimer(timeInterval: 2.0, target: self, selector: #selector(forward(_:)), userInfo: nil, repeats: true)
-            forward.isEnabled = false //自動再生停止中は進むボタンを押せないようにする
-            back.isEnabled = false   // 自動再生停止中は戻るボタンを押せないようにする
-        // 自動再生中の場合
+            forward.isEnabled = false //自動再生中は進むボタンを押せないようにする
+            back.isEnabled = false   // 自動再生中は戻るボタンを押せないようにする
+            // 自動再生中の場合
         } else {
             isAutoplaying = false
             timer.invalidate()
-            sender.setTitle("再生", for: .normal)
+            autoPlay.setTitle("再生", for: .normal)
             forward.isEnabled = true //自動再生停止中は進むボタンを押せるようにする
             back.isEnabled = true   // 自動再生停止中は戻るボタンを押せるようにする
         }
@@ -67,12 +69,10 @@ class ViewController: UIViewController {
             // インデックスが範囲外にならない場合は次に進む
             if imageCurrentIndex < imageData.count - 1 {
                 imageCurrentIndex += 1
-                ImageView.image = UIImage(named: imageData[imageCurrentIndex])
             }
             // そうでない場合、最初に戻る
             else {
                 imageCurrentIndex = 0
-                ImageView.image = UIImage(named: imageData[imageCurrentIndex])
             }
         }
         // 画像送りが逆順の場合
@@ -80,21 +80,27 @@ class ViewController: UIViewController {
             // インデックスが範囲外にならない場合は後ろに進む
             if imageCurrentIndex > 0 {
                 imageCurrentIndex -= 1
-                ImageView.image = UIImage(named: imageData[imageCurrentIndex])
             }
             // そうでない場合、最後に戻る
             else {
                 imageCurrentIndex = imageData.count - 1
-                ImageView.image = UIImage(named: imageData[imageCurrentIndex])
             }
         }
+        ImageView.image = UIImage(named: imageData[imageCurrentIndex])
     }
     
     // 画像タップ
     @objc func imageTapped() {
+        // タップしたら強制的に自動再生停止状態にする
+        isAutoplaying = false
+        timer.invalidate()
+        autoPlay.setTitle("再生", for: .normal)
+        forward.isEnabled = true //自動再生停止中は進むボタンを押せるようにする
+        back.isEnabled = true   // 自動再生停止中は戻るボタンを押せるようにする
+        
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let zoomViewController = storyboard.instantiateViewController(withIdentifier: "ZoomViewController") as! ZoomViewController
-
+        
         // 拡大表示したい画像を次の画面に渡す
         zoomViewController.imageToZoom = ImageView.image
         
